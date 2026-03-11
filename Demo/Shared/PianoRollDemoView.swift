@@ -14,7 +14,7 @@ public struct PianoRollDemoView: View {
     static let pitchColors: [Color] = [
         .red, .orange, .yellow, .green, .mint, .cyan,
         .blue, .indigo, .purple, .pink, .red, .orange,
-        .yellow, .green, .mint, .cyan,
+        .yellow, .green, .mint, .cyan
     ]
 
     @State var customModel = PianoRollModel(notes: [
@@ -28,7 +28,7 @@ public struct PianoRollDemoView: View {
         PianoRollNote(start: 10, length: 1, pitch: 9, text: "A"),
         PianoRollNote(start: 12, length: 3, pitch: 6, text: "F"),
         PianoRollNote(start: 12, length: 1, pitch: 14, text: "F"),
-        PianoRollNote(start: 13, length: 2, pitch: 11, text: "C♯"),
+        PianoRollNote(start: 13, length: 2, pitch: 11, text: "C♯")
     ], length: 16, height: 16)
 
     public var body: some View {

@@ -32,7 +32,8 @@ public struct PianoRoll<NoteContent: View>: View {
     ///   - gridColor: Color of grid
     ///   - gridSize: Size of a grid cell
     ///   - layout: Horizontal or vertical layout
-    ///   - noteContent: Custom view builder for note appearance. Receives the note and whether it is active (hovering/dragging).
+    ///   - noteContent: Custom view builder for note appearance.
+    ///     Receives the note and whether it is active (hovering/dragging).
     public init(
         editable: Bool = true,
         model: Binding<PianoRollModel>,
