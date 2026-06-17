@@ -8,7 +8,7 @@ import SwiftUI
 ///
 /// With each note as a separate view this might not be suitable for very large sequences, but
 /// it makes it easier to implement.
-struct PianoRollNoteView: View {
+struct PianoRollNoteView<NoteContent: View>: View {
     @Binding var note: PianoRollNote
     var gridSize: CGSize
     var color: Color
@@ -28,10 +28,21 @@ struct PianoRollNoteView: View {
     var sequenceHeight: Int
     var isContinuous = false
     var editable: Bool = false
-    var lineOpacity: Double = 1
+    /// Width of the trailing drag handle used to change a note's length.
+    /// `nil` keeps the default of half a grid column.
+    var resizeHandleLength: CGFloat? = nil
+    var noteContent: (PianoRollNote, Bool) -> NoteContent
+
+    var isActive: Bool {
+        hovering || offset != .zero || lengthOffset != 0
+    }
 
     var noteColor: Color {
         note.color ?? color
+    }
+
+    private var lengthHandleWidth: CGFloat {
+        resizeHandleLength ?? gridSize.width * 0.5
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
@@ -104,20 +115,7 @@ struct PianoRollNoteView: View {
             }
 
         // Main note body.
-        ZStack(alignment: .trailing) {
-            ZStack(alignment: .leading) {
-                Rectangle()
-                    .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
-                Text(note.text ?? "")
-                    .opacity(note.text == nil ? 0 : 1)
-                    .padding(.leading, 5)
-            }
-            Rectangle()
-                .foregroundColor(.black)
-                .padding(4)
-                .frame(width: 10)
-                .opacity(editable ? lineOpacity : 0)
-        }
+        noteContent(note, isActive)
             .onHover { over in hovering = over }
             .padding(1) // so we can see consecutive notes
             .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
@@ -133,7 +131,7 @@ struct PianoRollNoteView: View {
             Spacer()
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
-                .frame(width: gridSize.width * 0.5, height: gridSize.height)
+                .frame(width: lengthHandleWidth, height: gridSize.height)
                 .gesture(editable ? lengthDragGesture : nil)
         }
         .frame(width: gridSize.width * CGFloat(note.length),
